@@ -127,4 +127,164 @@
                 question: "'오운완'의 뜻은 무엇인가요?",
                 answers: [
                     { text: "오늘 운동 완료", correct: true },
-                    { text: "오늘 운세 완전 꽝
+                    { text: "오늘 운세 완전 꽝", correct: false },
+                    { text: "오늘 우리 완주", correct: false },
+                    { text: "오래된 운전 완벽", correct: false }
+                ]
+            },
+            {
+                question: "'알잘딱깔센'의 뜻은 무엇인가요?",
+                answers: [
+                    { text: "알고 있으면 잘 될 것이다. 딱히 깔끔하게 센스있게", correct: false },
+                    { text: "알아서 잘 딱 깔끔하게 센스있게", correct: true },
+                    { text: "알고 보니 잘생겼고 딱 보니 깔끔하게 센스있는", correct: false },
+                    { text: "알지도 못하면서 잘난척은 딱 깔끔하게 센스없이", correct: false }
+                ]
+            },
+            {
+                question: "'점메추'의 뜻은 무엇인가요?",
+                answers: [
+                    { text: "점심 메뉴 추천", correct: true },
+                    { text: "점심 먹고 추워요", correct: false },
+                    { text: "점점 메마르고 추워요", correct: false },
+                    { text: "점심 메뉴 추리", correct: false }
+                ]
+            },
+            {
+                question: "'혼코노'의 뜻은 무엇인가요?",
+                answers: [
+                    { text: "혼자서 코인 노래방", correct: true },
+                    { text: "혼자서 컴퓨터 게임 노래방", correct: false },
+                    { text: "혼자서 코를 너무 곤다", correct: false },
+                    { text: "혼자서 코딩 노래", correct: false }
+                ]
+            },
+            {
+                question: "'애빼시'의 뜻은 무엇인가요?",
+                answers: [
+                    { text: "애매하게 빼빼로를 시키다", correct: false },
+                    { text: "애인이 빼놓지 않고 시키는 일", correct: false },
+                    { text: "애교 빼면 시체", correct: true },
+                    { text: "애들 빼고 시간 내기", correct: false }
+                ]
+            },
+            {
+                question: "'갑분싸'의 뜻은 무엇인가요?",
+                answers: [
+                    { text: "갑자기 분위기 싸해짐", correct: true },
+                    { text: "갑자기 분위기 살아남", correct: false },
+                    { text: "갑자기 분위기 사람 많음", correct: false },
+                    { text: "갑자기 분위기 싸움 시작", correct: false }
+                ]
+            }
+        ];
+
+        const questionElement = document.getElementById("question");
+        const answerButtonsElement = document.getElementById("answer-buttons");
+        const nextButton = document.getElementById("next-btn");
+        const resultElement = document.getElementById("result");
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let currentAnswers = [];
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            nextButton.innerHTML = "다음";
+            nextButton.classList.add("hide");
+            resultElement.textContent = "";
+            showQuestion();
+        }
+
+        function showQuestion() {
+            resetState();
+            let currentQuestion = questions[currentQuestionIndex];
+            let questionNo = currentQuestionIndex + 1;
+            questionElement.innerHTML = `${questionNo}. ${currentQuestion.question}`;
+
+            currentAnswers = shuffleArray([...currentQuestion.answers]);
+
+            currentAnswers.forEach((answer, index) => {
+                const button = document.createElement("button");
+                button.innerHTML = answer.text; // ⭐ 이 부분을 수정했습니다.
+                button.classList.add("btn");
+                if (answer.correct) {
+                    button.dataset.correct = answer.correct;
+                }
+                button.addEventListener("click", selectAnswer);
+                answerButtonsElement.appendChild(button);
+            });
+        }
+
+        function resetState() {
+            nextButton.classList.add("hide");
+            resultElement.textContent = "";
+            while (answerButtonsElement.firstChild) {
+                answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+            }
+        }
+
+        function selectAnswer(e) {
+            const selectedBtn = e.target;
+            const isCorrect = selectedBtn.dataset.correct === "true";
+
+            if (isCorrect) {
+                selectedBtn.classList.add("correct");
+                score++;
+                resultElement.textContent = "정답입니다! 🎉";
+                resultElement.classList.remove("incorrect-text");
+                resultElement.classList.add("correct-text");
+            } else {
+                selectedBtn.classList.add("incorrect");
+                resultElement.textContent = "틀렸습니다! 😥";
+                resultElement.classList.remove("correct-text");
+                resultElement.classList.add("incorrect-text");
+            }
+
+            Array.from(answerButtonsElement.children).forEach(button => {
+                if (button.dataset.correct === "true") {
+                    button.classList.add("correct");
+                }
+                button.disabled = true;
+            });
+
+            nextButton.classList.remove("hide");
+        }
+
+        function showScore() {
+            resetState();
+            questionElement.innerHTML = `퀴즈가 종료되었습니다. ${questions.length}문제 중 ${score}문제를 맞히셨습니다!`;
+            nextButton.innerHTML = "다시 시작하기";
+            nextButton.classList.remove("hide");
+        }
+
+        function handleNextButton() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        nextButton.addEventListener("click", () => {
+            if (currentQuestionIndex < questions.length) {
+                handleNextButton();
+            } else {
+                startQuiz();
+            }
+        });
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        startQuiz();
+    </script>
+</body>
+</html>
