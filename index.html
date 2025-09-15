@@ -112,10 +112,6 @@
         <div id="quiz">
             <h2 id="question">문제</h2>
             <div id="answer-buttons" class="btn-grid">
-                <button class="btn">보기 1</button>
-                <button class="btn">보기 2</button>
-                <button class="btn">보기 3</button>
-                <button class="btn">보기 4</button>
             </div>
             <p id="result" class="result"></p>
             <button id="next-btn" class="next-btn">다음</button>
@@ -205,12 +201,12 @@
 
             currentAnswers = shuffleArray([...currentQuestion.answers]);
 
-            currentAnswers.forEach((answer, index) => {
+            currentAnswers.forEach(answer => {
                 const button = document.createElement("button");
-                button.innerHTML = answer.text; // ⭐ 이 부분을 수정했습니다.
+                button.innerHTML = answer.text;
                 button.classList.add("btn");
                 if (answer.correct) {
-                    button.dataset.correct = answer.correct;
+                    button.dataset.correct = "true";
                 }
                 button.addEventListener("click", selectAnswer);
                 answerButtonsElement.appendChild(button);
